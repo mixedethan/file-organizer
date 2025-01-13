@@ -1,0 +1,5 @@
+### requirements.txt
+# required libraries
+os
+shutil
+argparse
