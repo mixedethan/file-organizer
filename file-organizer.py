@@ -2,6 +2,11 @@ import os
 import shutil
 import argparse
 
+
+
+# TODO: Add functionality for Windows
+# TODO: Possibly create an application rather than using a CLI
+
 # usage:    python file-organizer.py /Users/ethanwilson/Downloads/ --os M
 
 # define all the file categories
@@ -11,7 +16,7 @@ CATEGORIES = {
     "Videos": [".mp4", ".mkv", ".mov", ".avi"],
     "Music": [".mp3", ".wav", ".aac"],
     "Archives": [".zip", ".tar", ".rar", ".gz"],
-    "Others": []  # For uncategorized/unrecognized file types
+    "Others": []  # for uncategorized/unrecognized file types
 }
 
 
@@ -21,8 +26,9 @@ parser = argparse.ArgumentParser(description='A file organizer tool')
 # folder to organize argument
 parser.add_argument(
     'folder',
-    nargs='?',          
-    help='Enter the file path of the folder to be organized')
+    type=str,          
+    help='Enter the file path of the folder to be organized'
+)
 
 # argument flags for temperature units
 parser.add_argument(
@@ -42,12 +48,24 @@ if not os.path.exists(folder_to_organize):
     print("Invalid path. Please check the folder path and try again.")
     exit()
 
-# List all files in the folder
-files = [f for f in os.listdir(folder_to_organize) if os.path.isfile(os.path.join(folder_to_organize, f))]
+# list all files in the folder
+entries = os.listdir(folder_to_organize)
 
-print(f"Found {len(files)} files to organize.")
+# will store all file names within designated folder
+files = []
 
-# place files into the category
+# check for only files & not directories
+for entry in entries:
+    full_path = os.path.join(folder_to_organize, entry)
+    # ex full_path = /Downloads/resume.pdf
+
+    if os.path.isfile(full_path):
+        files.append(entry)
+
+
+print(f"Found {len(files)} files to organize in {folder_to_organize}.")
+
+# place files into the category function
 def categorize_file(filename):
     for category, extensions in CATEGORIES.items():
         if any(filename.lower().endswith(ext) for ext in extensions):
